@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suffix Finder - Number Search Tool</title>
+    <!-- Tailwind CSS (একমাত্র এক্সটার্নাল ফাইল, এটি সাধারণত সব নেটওয়ার্কে কাজ করে) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#1A1A1A] antialiased">
+    <div class="min-h-screen flex flex-col">
+        <header class="border-b border-gray-200 bg-white sticky top-0 z-10">
+            <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg>
+                    </div>
+                    <h1 class="text-xl font-semibold tracking-tight">Suffix Finder</h1>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-6 py-12 flex-1 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Left Side: Controls -->
+                <div class="lg:col-span-5 space-y-8">
+                    <section>
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Step 1: Upload Files</h2>
+                        
+                        <!-- Upload Box -->
+                        <div id="dropZone" class="relative border-2 border-dashed border-gray-200 rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:border-indigo-400 hover:bg-gray-50">
+                            <input type="file" id="fileInput" class="hidden" accept=".txt,.csv" multiple>
+                            <div class="bg-indigo-50 p-4 rounded-full mb-4 text-indigo-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                            </div>
+                            <p class="text-lg font-medium text-gray-900 text-center">Drop your files here</p>
+                            <p class="text-sm text-gray-500 mt-1 text-center">or click to browse (.txt, .csv)</p>
+                        </div>
+
+                        <!-- Status Box (Hidden by default) -->
+                        <div id="statusBox" class="hidden space-y-4 fade-in mt-2">
+                            <div class="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 shadow-sm">
+                                <div class="bg-green-50 p-3 rounded-xl text-green-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p id="fileCountText" class="font-semibold text-gray-900 truncate">0 files uploaded</p>
+                                    <p id="totalNumbersText" class="text-sm text-gray-500">0 numbers total</p>
+                                </div>
+                                <div class="text-green-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button id="addMoreBtn" class="flex-1 flex items-center justify-center gap-2 py-3 bg-indigo-600 rounded-xl text-sm font-bold text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
+                                    Add More
+                                </button>
+                                <button id="resetBtn" class="flex-1 flex items-center justify-center gap-2 py-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-red-600 hover:bg-red-50 hover:border-red-200 transition-all">
+                                    Reset All
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="searchSection" class="opacity-40 pointer-events-none">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Step 2: Search Suffix</h2>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            </div>
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Enter digits (e.g. 123)"
+                                class="w-full pl-11 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-lg font-medium placeholder:text-gray-400 shadow-sm"
+                            />
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Side: Results -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm min-h-[500px] flex flex-col">
+                        <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Results</h3>
+                                <p id="resultStatusText" class="text-sm text-gray-500">Upload a file to start</p>
+                            </div>
+                            <button id="exportBtn" class="hidden flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                                Export
+                            </button>
+                        </div>
+
+                        <div id="resultsContainer" class="flex-1 overflow-y-auto p-8">
+                            <!-- Default State -->
+                            <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center space-y-4 py-20">
+                                <div class="bg-gray-100 p-6 rounded-full text-gray-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                </div>
+                                <p class="text-gray-900 font-semibold text-lg">No files uploaded</p>
+                            </div>
+                            <!-- Search Grid -->
+                            <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 fade-in hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="max-w-5xl mx-auto px-6 py-12 border-t border-gray-100 w-full">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-gray-400">
+                <p>&copy; 2024 Number Suffix Finder. No libraries, just pure speed.</p>
+                <div class="flex items-center gap-8">
+                    <div class="text-center">
+                        <p class="text-xs font-bold uppercase tracking-widest mb-1">Total</p>
+                        <p id="totalStat" class="text-xl font-mono font-bold text-gray-900">0</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs font-bold uppercase tracking-widest mb-1">Matches</p>
+                        <p id="matchStat" class="text-xl font-mono font-bold text-indigo-600">0</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // State Management
+        let allNumbers = [];
+        let filteredNumbers = [];
+        let uploadedFiles = [];
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const statusBox = document.getElementById('statusBox');
+        const searchSection = document.getElementById('searchSection');
+        const searchInput = document.getElementById('searchInput');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const resultStatusText = document.getElementById('resultStatusText');
+        const exportBtn = document.getElementById('exportBtn');
+        const totalStat = document.getElementById('totalStat');
+        const matchStat = document.getElementById('matchStat');
+
+        // Initial Setup
+        dropZone.onclick = () => fileInput.click();
+        document.getElementById('addMoreBtn').onclick = () => fileInput.click();
+        document.getElementById('resetBtn').onclick = resetAll;
+        exportBtn.onclick = exportToTxt;
+
+        // Drag and Drop Logic
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500', 'bg-indigo-50'); };
+        dropZone.ondragleave = () => { dropZone.classList.remove('border-indigo-500', 'bg-indigo-50'); };
+        dropZone.ondrop = (e) => { e.preventDefault(); handleFiles(e.dataTransfer.files); };
+        fileInput.onchange = (e) => handleFiles(e.target.files);
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            
+            Array.from(files).forEach(file => {
+                uploadedFiles.push(file.name);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    const parsed = text.split(/[\n,\s]+/)
+                        .map(n => n.trim())
+                        .filter(n => n.length > 0 && /^\d+$/.test(n));
+                    
+                    allNumbers = [...allNumbers, ...parsed];
+                    updateUI();
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        function updateUI() {
+            if (allNumbers.length > 0) {
+                dropZone.classList.add('hidden');
+                statusBox.classList.remove('hidden');
+                searchSection.classList.remove('opacity-40', 'pointer-events-none');
+                document.getElementById('fileCountText').innerText = `${uploadedFiles.length} files uploaded`;
+                document.getElementById('totalNumbersText').innerText = `${allNumbers.length.toLocaleString()} numbers total`;
+                totalStat.innerText = allNumbers.length.toLocaleString();
+                renderResults();
+            }
+        }
+
+        // Search Logic
+        searchInput.oninput = (e) => {
+            e.target.value = e.target.value.replace(/\D/g, ''); // Only digits
+            renderResults();
+        };
+
+        function renderResults() {
+            const term = searchInput.value.trim();
+            
+            if (!term) {
+                resultsGrid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = `
+                    <div class="bg-indigo-50 p-6 rounded-full text-indigo-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <p class="text-gray-900 font-semibold text-lg">Ready to search</p>
+                    <p class="text-sm text-gray-500">Enter digits in the search box to filter.</p>
+                `;
+                resultStatusText.innerText = "Enter a suffix to see results";
+                exportBtn.classList.add('hidden');
+                matchStat.innerText = "0";
+                return;
+            }
+
+            filteredNumbers = allNumbers.filter(num => num.endsWith(term));
+            matchStat.innerText = filteredNumbers.length.toLocaleString();
+            resultStatusText.innerText = `${filteredNumbers.length.toLocaleString()} matches found`;
+
+            if (filteredNumbers.length > 0) {
+                emptyState.classList.add('hidden');
+                resultsGrid.classList.remove('hidden');
+                exportBtn.classList.remove('hidden');
+                
+                resultsGrid.innerHTML = filteredNumbers.map((num, idx) => `
+                    <div class="group p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-indigo-200 hover:bg-white transition-all flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded-md uppercase tracking-widest">#${idx + 1}</span>
+                            <span class="font-mono text-gray-900 font-medium text-lg">
+                                ${num.slice(0, -term.length)}<span class="text-indigo-600 font-bold underline decoration-indigo-200">${term}</span>
+                            </span>
+                        </div>
+                        <button onclick="copyToClipboard('${num}', this)" class="p-3 bg-white text-gray-400 rounded-xl hover:text-indigo-600 shadow-sm transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                resultsGrid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = `<p class="text-gray-500">No matches found for "${term}"</p>`;
+                exportBtn.classList.add('hidden');
+            }
+        }
+
+        // Copy to Clipboard
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"/></svg>`;
+                btn.classList.add('bg-green-50');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('bg-green-50');
+                }, 2000);
+            });
+        }
+
+        // Export to TXT
+        function exportToTxt() {
+            const blob = new Blob([filteredNumbers.join('\n')], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `suffix_${searchInput.value}.txt`;
+            a.click();
+        }
+
+        // Reset All
+        function resetAll() {
+            allNumbers = [];
+            filteredNumbers = [];
+            uploadedFiles = [];
+            searchInput.value = '';
+            dropZone.classList.remove('hidden');
+            statusBox.classList.add('hidden');
+            searchSection.classList.add('opacity-40', 'pointer-events-none');
+            renderResults();
+            totalStat.innerText = "0";
+            matchStat.innerText = "0";
+            fileInput.value = '';
+        }
+    </script>
+</body>
+</html>
