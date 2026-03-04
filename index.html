@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suffix Pro | Professional Suffix Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --accent: #4F46E5;
+            --accent-hover: #4338CA;
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --border: rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .premium-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-secondary {
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #E2E8F0;
+            color: var(--text-primary);
+        }
+
+        .keypad-btn {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .keypad-btn:hover {
+            background: #F8FAFC;
+            border-color: rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .keypad-btn:active {
+            transform: scale(0.95);
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .slot {
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .slot.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.15);
+            background: white;
+        }
+
+        .result-item {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .result-item:hover {
+            background: #F8FAFC;
+            border-color: rgba(0, 0, 0, 0.1);
+            transform: translateX(4px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .len-btn {
+            transition: all 0.2s;
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+        }
+
+        .len-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                    </svg>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-900">Suffix Pro</h1>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Panel: Controls -->
+            <div class="lg:col-span-5 space-y-4">
+                <!-- Data Ingestion -->
+                <section class="premium-card p-5 animate-fade-in">
+                    <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p id="totalCount" class="text-xl font-bold font-mono text-slate-900">0</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Records Cached</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <label class="flex-1">
+                            <input type="file" id="fileInput" multiple accept=".txt,.csv" class="hidden" />
+                            <div class="w-full py-3 btn-primary rounded-xl font-bold text-center cursor-pointer text-xs shadow-md">
+                                Import
+                            </div>
+                        </label>
+                        <button id="resetBtn" class="flex-1 py-3 btn-secondary rounded-xl font-bold text-xs text-red-500 hover:bg-red-50">
+                            Purge
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Configuration -->
+                <section class="premium-card p-5 animate-fade-in" style="animation-delay: 0.1s">
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Suffix Length</p>
+                        <div id="lengthConfig" class="grid grid-cols-4 gap-2">
+                            <button data-len="2" class="len-btn py-2.5 rounded-xl text-xs font-bold">2D</button>
+                            <button data-len="3" class="len-btn py-2.5 rounded-xl text-xs font-bold active">3D</button>
+                            <button data-len="4" class="len-btn py-2.5 rounded-xl text-xs font-bold">4D</button>
+                            <button data-len="5" class="len-btn py-2.5 rounded-xl text-xs font-bold">5D</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Panel: Interface -->
+            <div class="lg:col-span-7">
+                <!-- Keypad View -->
+                <div id="keypadView" class="premium-card p-6 flex flex-col items-center animate-fade-in" style="animation-delay: 0.2s">
+                    <div class="text-center mb-6">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enter the ending digits to search numbers</p>
+                    </div>
+
+                    <!-- Display Slots -->
+                    <div id="slotsContainer" class="flex gap-3 mb-8">
+                        <!-- Generated by JS -->
+                    </div>
+
+                    <!-- Keypad -->
+                    <div class="grid grid-cols-3 gap-3 max-w-[280px] w-full">
+                        <button data-key="1" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">1</button>
+                        <button data-key="2" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">2</button>
+                        <button data-key="3" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">3</button>
+                        
+                        <button data-key="4" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">4</button>
+                        <button data-key="5" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">5</button>
+                        <button data-key="6" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">6</button>
+                        
+                        <button data-key="7" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">7</button>
+                        <button data-key="8" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">8</button>
+                        <button data-key="9" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">9</button>
+                        
+                        <button data-key="C" class="keypad-btn aspect-square rounded-2xl text-slate-400 text-lg font-bold flex items-center justify-center hover:text-red-500">CLR</button>
+                        <button data-key="0" class="keypad-btn aspect-square rounded-2xl text-2xl font-bold flex items-center justify-center">0</button>
+                        <button data-key="B" class="keypad-btn aspect-square rounded-2xl text-slate-400 flex items-center justify-center hover:text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414A2 2 0 0010.828 19H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results View -->
+                <div id="resultsView" class="hidden premium-card p-6 flex flex-col animate-fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <p class="text-sm font-bold text-slate-900">
+                            <span id="matchCount" class="text-indigo-600">0</span> Matches: 
+                            <span id="searchSuffix" class="font-mono bg-indigo-50 px-2 py-0.5 rounded"></span>
+                        </p>
+                        <button id="exportBtn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button id="backBtn" class="w-full mb-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-500 font-bold transition-all flex items-center justify-center gap-2 text-xs border border-slate-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Search
+                    </button>
+
+                    <div id="resultsGrid" class="flex-1 space-y-3 overflow-y-auto no-scrollbar pr-1">
+                        <!-- Results -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer / Features -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 animate-fade-in" style="animation-delay: 0.3s">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">Fast Processing</h4>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">Instantly index thousands of records from .txt or .csv files.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">Local & Secure</h4>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">Your data stays in your browser. No server uploads required.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">Export Ready</h4>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">Save your filtered results directly to a text file with one click.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-50">
+                <p class="text-[10px] font-medium text-slate-400">© 2024 Suffix Pro. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">v2.1.0 Premium</span>
+                    <div class="w-1 h-1 rounded-full bg-slate-200"></div>
+                    <span class="text-[10px] font-medium text-slate-400">Privacy Policy</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl opacity-0 pointer-events-none transition-all duration-500 transform translate-y-10 flex items-center gap-4 z-50">
+        <div class="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <span id="toastMsg" class="font-bold text-sm tracking-wide">Action Successful</span>
+    </div>
+
+    <script>
+        // State
+        const state = {
+            numbers: new Set(),
+            suffixLength: 3,
+            currentInput: '',
+            results: [],
+            filesUploaded: 0
+        };
+
+        // DOM
+        const elements = {
+            fileInput: document.getElementById('fileInput'),
+            totalCount: document.getElementById('totalCount'),
+            fileStatusText: document.getElementById('fileStatusText'),
+            statusCheck: document.getElementById('statusCheck'),
+            resetBtn: document.getElementById('resetBtn'),
+            lengthConfig: document.getElementById('lengthConfig'),
+            slotsContainer: document.getElementById('slotsContainer'),
+            keypadView: document.getElementById('keypadView'),
+            resultsView: document.getElementById('resultsView'),
+            resultsGrid: document.getElementById('resultsGrid'),
+            matchCount: document.getElementById('matchCount'),
+            searchSuffix: document.getElementById('searchSuffix'),
+            backBtn: document.getElementById('backBtn'),
+            exportBtn: document.getElementById('exportBtn'),
+            toast: document.getElementById('toast'),
+            toastMsg: document.getElementById('toastMsg')
+        };
+
+        // Init
+        function init() {
+            loadFromStorage();
+            renderSlots();
+            setupEventListeners();
+            updateUI();
+            updateLengthButtons();
+        }
+
+        function loadFromStorage() {
+            const stored = localStorage.getItem('suffixFinderNumbers');
+            const storedFiles = localStorage.getItem('suffixFinderFiles');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    state.numbers = new Set(parsed);
+                } catch (e) { console.error(e); }
+            }
+            if (storedFiles) state.filesUploaded = parseInt(storedFiles) || 0;
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('suffixFinderNumbers', JSON.stringify([...state.numbers]));
+            localStorage.setItem('suffixFinderFiles', state.filesUploaded.toString());
+        }
+
+        function renderSlots() {
+            elements.slotsContainer.innerHTML = '';
+            for (let i = 0; i < state.suffixLength; i++) {
+                const slot = document.createElement('div');
+                slot.className = `slot w-12 h-14 rounded-xl flex items-center justify-center text-xl font-black transition-all duration-300`;
+                slot.textContent = state.currentInput[i] || '';
+                if (i === state.currentInput.length) slot.classList.add('active');
+                elements.slotsContainer.appendChild(slot);
+            }
+        }
+
+        function updateUI() {
+            elements.totalCount.textContent = state.numbers.size.toLocaleString();
+        }
+
+        function updateLengthButtons() {
+            document.querySelectorAll('.len-btn').forEach(btn => {
+                if (parseInt(btn.dataset.len) === state.suffixLength) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function showToast(msg) {
+            elements.toastMsg.textContent = msg;
+            elements.toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            elements.toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                elements.toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                elements.toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        function setupEventListeners() {
+            elements.fileInput.addEventListener('change', handleFileUpload);
+
+            // Reset Button Fix
+            elements.resetBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const confirmPurge = confirm('Are you sure you want to purge the database?');
+                if (confirmPurge) {
+                    state.numbers.clear();
+                    state.filesUploaded = 0;
+                    saveToStorage();
+                    updateUI();
+                    showToast('Database purged');
+                }
+            });
+
+            elements.lengthConfig.addEventListener('click', (e) => {
+                const btn = e.target.closest('.len-btn');
+                if (!btn) return;
+                state.suffixLength = parseInt(btn.dataset.len);
+                state.currentInput = '';
+                updateLengthButtons();
+                renderSlots();
+            });
+
+            document.querySelectorAll('.keypad-btn').forEach(btn => {
+                btn.addEventListener('click', () => handleKeyPress(btn.dataset.key));
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (!elements.resultsView.classList.contains('hidden')) return;
+                if (e.key >= '0' && e.key <= '9') handleKeyPress(e.key);
+                else if (e.key === 'Backspace') handleKeyPress('B');
+                else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') handleKeyPress('C');
+            });
+
+            elements.backBtn.addEventListener('click', () => {
+                elements.resultsView.classList.add('hidden');
+                elements.keypadView.classList.remove('hidden');
+                state.currentInput = '';
+                renderSlots();
+            });
+
+            elements.exportBtn.addEventListener('click', handleExport);
+        }
+
+        async function handleFileUpload(e) {
+            const files = e.target.files;
+            if (!files.length) return;
+
+            showToast('Processing data streams...');
+            const initialSize = state.numbers.size;
+
+            for (const file of files) {
+                try {
+                    const text = await file.text();
+                    const matches = text.match(/\d+/g);
+                    if (matches) {
+                        matches.forEach(num => state.numbers.add(num));
+                    }
+                    state.filesUploaded++;
+                } catch (err) { console.error(err); }
+            }
+
+            const added = state.numbers.size - initialSize;
+            saveToStorage();
+            updateUI();
+            showToast(`Success: ${added.toLocaleString()} records indexed`);
+            e.target.value = '';
+        }
+
+        function handleKeyPress(key) {
+            if (key === 'C') state.currentInput = '';
+            else if (key === 'B') state.currentInput = state.currentInput.slice(0, -1);
+            else {
+                if (state.currentInput.length < state.suffixLength) {
+                    state.currentInput += key;
+                }
+            }
+
+            renderSlots();
+
+            if (state.currentInput.length === state.suffixLength) {
+                setTimeout(performSearch, 300);
+            }
+        }
+
+        function performSearch() {
+            const suffix = state.currentInput;
+            state.results = [...state.numbers].filter(num => num.endsWith(suffix));
+            
+            elements.searchSuffix.textContent = suffix;
+            elements.matchCount.textContent = state.results.length.toLocaleString();
+            
+            renderResults();
+            
+            elements.keypadView.classList.add('hidden');
+            elements.resultsView.classList.remove('hidden');
+        }
+
+        function renderResults() {
+            elements.resultsGrid.innerHTML = '';
+            
+            if (state.results.length === 0) {
+                elements.resultsGrid.innerHTML = `
+                    <div class="py-20 text-center animate-fade-in">
+                        <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 opacity-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">No matching patterns found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            state.results.forEach((num, index) => {
+                const item = document.createElement('div');
+                item.className = 'result-item p-5 rounded-2xl flex items-center justify-between group animate-fade-in';
+                item.style.animationDelay = `${index * 0.03}s`;
+                
+                const prefix = num.slice(0, -state.suffixLength);
+                const suffix = num.slice(-state.suffixLength);
+                
+                item.innerHTML = `
+                    <div class="font-mono text-xl tracking-tight">
+                        <span class="text-slate-600 font-light">${prefix}</span><span class="text-indigo-400 font-extrabold">${suffix}</span>
+                    </div>
+                    <button class="copy-btn p-3 rounded-xl bg-white/5 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm" data-num="${num}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                `;
+                
+                const copyBtn = item.querySelector('.copy-btn');
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(num);
+                    showToast('Pattern copied to clipboard');
+                    
+                    const originalIcon = copyBtn.innerHTML;
+                    copyBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    `;
+                    copyBtn.classList.add('bg-emerald-600', 'text-white');
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalIcon;
+                        copyBtn.classList.remove('bg-emerald-600', 'text-white');
+                    }, 1500);
+                });
+                
+                elements.resultsGrid.appendChild(item);
+            });
+        }
+
+        function handleExport() {
+            if (state.results.length === 0) return;
+            const content = state.results.join('\n');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `export_${state.currentInput}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Data stream exported successfully');
+        }
+
+        init();
+    </script>
+</body>
+</html>
